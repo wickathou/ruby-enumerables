@@ -163,19 +163,41 @@ module Enumerable
         end
     end
 
-    # def my_inject(a=nil)
-    #     final = 0
-    #     if block_given?
-    #         self.my_each {|x| final(&:+)}
-    #     else
+    def my_inject(a=nil,b=nil)
+        a != nil ? final = a : final = 0
+        if b != nil || b != false
+            case b
+            when :+
+                self.my_each {|y| final+=y}
+                return final
+            when :-
+                self.my_each {|y| final-=y}
+                return final
+            when :*
+                self.my_each {|y| final*=y}
+                return final
+            when :/
+                self.my_each {|y| final/=y}
+                return final
+            end
+        end
+        if block_given?
+            final = 1 if yield(final, self[0]) == 0 || yield(final, self[1]) == 0 if self[1] != nil
+            self.my_each {|x| final = yield(final,x)}
+            return final
+        end
+        'nothing'
+    end
 
-    #     end
-    # end
+    def multiply_els(x)
+        self.my_inject {|x,y| x*y}
+    end
 
 end
 
 some = [1,2,3]
 
+# puts 1.method(:+).call(1)
 
 # some.my_each{|x| puts x}
 
@@ -215,6 +237,10 @@ some = [1,2,3]
 
 # puts some.my_map
 
-puts some.inject(1, :+)
+puts some.my_inject{|x,y| x*y}
+
+puts some.my_inject(1,:+)
+
+puts some.my_inject(1){|x,y| x+y}
 
 puts (Numeric).class
