@@ -71,18 +71,14 @@ module Enumerable
         false
       elsif a.class == Class
         my_each do |x|
-          if  x.is_a?(a) == true
-            return true
-          end
+          true if x.is_a?(a) == true
         end
         false
 
       end
     else
       my_each do |x|
-         if x
-        return true
-         end
+        true if x
       end
       false
     end
