@@ -243,11 +243,11 @@ puts some.my_count(1)
 
 puts some.my_count
 
-puts some.my_count { |a| a % 1 == 0 }
+puts (some.my_count { |a| a % 1 == 0 })
 
 # my_inject test
 
-puts some.my_inject { |x, y| x * y }
+puts (some.my_inject { |x, y| x * y })
 
 puts some.my_inject(:+)
 
