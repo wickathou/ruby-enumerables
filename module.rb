@@ -23,9 +23,7 @@ module Enumerable
     arr = []
     if block_given?
       my_each do |x|
-        if yield(x)
-          arr.push(x)
-        end
+        arr.push(x) if yield(x)
       end
       return arr
     else
@@ -36,33 +34,24 @@ module Enumerable
   def my_all?(a=nil)
     if block_given?
       my_each do |x|
-         if yield(x) == nil || yield(x) == false
-        return false
-         end
+        false if yield(x) == nil || yield(x) == false
       end
       true
     elsif a
       if a.class == Regexp
         my_each do |x|
-          if  a.match(x.to_s) == nil || a.match(x.to_s) == false
-            return false
-          end
+          return false if  a.match(x.to_s) == nil || a.match(x.to_s) == false
         end
         true
-      elsif a.class == Class
+    elsif a.class == Class
         my_each do |x|
-          if  x.is_a?(a) == nil || x.is_a?(a) == false
-            return false
-          end
+          return false if  x.is_a?(a) == nil || x.is_a?(a) == false
         end
         true
-
       end
     else
       my_each do |x|
-         if x == nil || x == false
-        return false
-         end
+        false if x == nil || x == false
       end
       true
     end
