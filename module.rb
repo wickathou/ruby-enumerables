@@ -164,7 +164,10 @@ module Enumerable
     end
 
     def my_inject(a=nil,b=nil)
-        a != nil ? final = a : final = 0
+        a.class == Numeric ? final = a : final = 0
+        if a != nil && b == nil
+            b = a
+        end
         if b != nil || b != false
             case b
             when :+
@@ -174,6 +177,7 @@ module Enumerable
                 self.my_each {|y| final-=y}
                 return final
             when :*
+                final = 1 if final != 0
                 self.my_each {|y| final*=y}
                 return final
             when :/
@@ -186,28 +190,49 @@ module Enumerable
             self.my_each {|x| final = yield(final,x)}
             return final
         end
-        'nothing'
     end
 
-    def multiply_els(x)
-        self.my_inject {|x,y| x*y}
-    end
+    
 
+end
+
+def multiply_els(x)
+    x.my_inject(:+)
 end
 
 some = [1,2,3]
 
-# puts 1.method(:+).call(1)
+# Tests
 
-# some.my_each{|x| puts x}
+multiply_els
 
-# puts some.my_each
+puts multiply_els(some)
+
+# Map with block and with proc
+
+some.my_map{|a| a*2}
+
+some_proc = Proc.new{|a| a*2}
+
+some.my_map(&some_proc)
+
+# my_each test
+
+some.my_each{|x| puts x}
+
+some.my_each
+
+# my_each_with_index test
 
 # some.my_each_with_index{|x| puts x}
 
 # puts some.my_each_with_index
 
+# my_select test
+
 # puts some.my_select{|a| a%2==0}
+
+# my_all? test
 
 # puts some.my_all?{|a| a%2==0}
 
@@ -215,11 +240,15 @@ some = [1,2,3]
 
 # puts some.my_all?(String)
 
+# my_any? test
+
 # puts some.my_any?{|a| a%2==0}
 
 # puts some.my_any?(/\d/)
 
 # puts some.my_any?(String)
+
+# my_none? test
 
 # puts some.my_none?{|a| a%5==0}
 
@@ -227,20 +256,18 @@ some = [1,2,3]
 
 # puts some.my_none?(String)
 
+# my_count test
+
 # puts some.my_count(1)
 
 # puts some.my_count
 
 # puts some.my_count{|a| a%1==0}
 
-# puts some.my_map{|a| a*2}
+# my_inject test
 
-# puts some.my_map
+# puts some.my_inject{|x,y| x*y}
 
-puts some.my_inject{|x,y| x*y}
+# puts some.my_inject(:+)
 
-puts some.my_inject(1,:+)
-
-puts some.my_inject(1){|x,y| x+y}
-
-puts (Numeric).class
+# puts some.my_inject(1){|x,y| x+y}
