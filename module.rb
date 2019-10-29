@@ -34,24 +34,24 @@ module Enumerable
   def my_all?(a=nil)
     if block_given?
       my_each do |x|
-        false if yield(x) == nil || yield(x) == false
+        false if yield(x).nil? || yield(x) == false
       end
       true
     elsif a
       if a.class == Regexp
         my_each do |x|
-          return false if  a.match(x.to_s) == nil || a.match(x.to_s) == false
+          return false if a.match(x.to_s).nil? || a.match(x.to_s) == false
         end
         true
-    elsif a.class == Class
+      elsif a.class == Class
         my_each do |x|
-          return false if  x.is_a?(a) == nil || x.is_a?(a) == false
+          return false if x.is_a?(a).nil? || x.is_a?(a) == false
         end
         true
       end
     else
       my_each do |x|
-        false if x == nil || x == false
+        false if x.nil? || x == false
       end
       true
     end
@@ -60,17 +60,13 @@ module Enumerable
   def my_any?(a=nil)
     if block_given?
       my_each do |x|
-         if yield(x) == true
-        return true
-         end
+        true if yield(x) == true
       end
       false
     elsif a
       if a.class == Regexp
         my_each do |x|
-          if  a.match(x.to_s)
-            return true
-          end
+          return true if a.match(x.to_s)
         end
         false
       elsif a.class == Class
@@ -95,7 +91,7 @@ module Enumerable
   def my_none?(a=nil)
     if block_given?
       my_each do |x|
-         if yield(x) == false || yield(x) == nil
+         if yield(x) == false || yield(x).nil?
         return true
          end
       end
@@ -103,14 +99,14 @@ module Enumerable
     elsif a
       if a.class == Regexp
         my_each do |x|
-          if  a.match(x.to_s) == nil || a.match(x.to_s) == false
+          if  a.match(x.to_s).nil? || a.match(x.to_s) == false
             return true
           end
         end
         false
       elsif a.class == Class
         my_each do |x|
-          if  x.is_a?(a) == nil || x.is_a?(a) == false
+          if  x.is_a?(a).nil? || x.is_a?(a) == false
             return true
           end
         end
@@ -119,7 +115,7 @@ module Enumerable
       end
     else
       my_each do |x|
-         if x == nil || x == false
+         if x.nil? || x == false
         return true
          end
       end
@@ -154,7 +150,7 @@ module Enumerable
 
   def my_inject(a=nil,b=nil)
     a.class == Numeric ? final = a : final = 0
-    if a != nil && b == nil
+    if a != nil && b.nil?
       b = a
     end
     if b != nil || b != false
