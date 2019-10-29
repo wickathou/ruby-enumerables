@@ -191,31 +191,31 @@ puts multiply_els(some)
 
 # Map with block and with proc
 
-some.my_map{|a| a*2}
+some.my_map { |a| a * 2 }
 
-some_proc = Proc.new{|a| a*2}
+some_proc = Proc.new { |a| a * 2 }
 
 some.my_map(&some_proc)
 
 # my_each test
 
-some.my_each{|x| puts x}
+some.my_each { |x| puts x }
 
 some.my_each
 
 # my_each_with_index test
 
-some.my_each_with_index{|x| puts x}
+some.my_each_with_index { |x| puts x }
 
 puts some.my_each_with_index
 
 # my_select test
 
-puts some.my_select{|a| a%2==0}
+puts some.my_select { |a| a % 2 == 0 }
 
 # my_all? test
 
-puts some.my_all?{|a| a%2==0}
+puts some.my_all? { |a| a % 2 == 0 }
 
 puts some.my_all?(/\d/)
 
@@ -223,7 +223,7 @@ puts some.my_all?(String)
 
 # my_any? test
 
-puts some.my_any?{|a| a%2==0}
+puts some.my_any? { |a| a % 2 == 0 }
 
 puts some.my_any?(/\d/)
 
@@ -231,7 +231,7 @@ puts some.my_any?(String)
 
 # my_none? test
 
-puts some.my_none?{|a| a%5==0}
+puts some.my_none? { |a| a % 5 == 0 }
 
 puts some.my_none?(/\W/)
 
@@ -243,12 +243,12 @@ puts some.my_count(1)
 
 puts some.my_count
 
-puts some.my_count{|a| a%1==0}
+puts some.my_count { |a| a % 1 == 0 }
 
 # my_inject test
 
-puts some.my_inject{|x,y| x*y}
+puts some.my_inject { |x, y| x * y }
 
 puts some.my_inject(:+)
 
-puts some.my_inject(1){|x,y| x+y}
+puts some.my_inject(1) { |x, y| x + y }
