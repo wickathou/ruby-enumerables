@@ -1,41 +1,41 @@
 module Enumerable
   def my_each
     if block_given?
-      for i in 0...self.size
+      for i in 0...size
         yield(self[i])
       end
     else
-      self.to_enum
+      to_enum
     end
   end
 
   def my_each_with_index
     if block_given?
-      for i in 0...self.size
+      for i in 0...size
         yield(i)
       end
     else
-      self.to_enum
+      to_enum
     end
   end
 
   def my_select
     arr = []
     if block_given?
-      self.my_each do |x|
+      my_each do |x|
         if yield(x)
           arr.push(x)
         end
       end
       return arr
     else
-      self.to_enum
+      to_enum
     end
   end
   
   def my_all?(a=nil)
     if block_given?
-      self.my_each do |x|
+      my_each do |x|
          if yield(x) == nil || yield(x) == false
         return false
          end
@@ -43,14 +43,14 @@ module Enumerable
       true
     elsif a
       if a.class == Regexp
-        self.my_each do |x|
+        my_each do |x|
           if  a.match(x.to_s) == nil || a.match(x.to_s) == false
             return false
           end
         end
         true
       elsif a.class == Class
-        self.my_each do |x|
+        my_each do |x|
           if  x.is_a?(a) == nil || x.is_a?(a) == false
             return false
           end
@@ -59,7 +59,7 @@ module Enumerable
 
       end
     else
-      self.my_each do |x|
+      my_each do |x|
          if x == nil || x == false
         return false
          end
@@ -70,7 +70,7 @@ module Enumerable
 
   def my_any?(a=nil)
     if block_given?
-      self.my_each do |x|
+      my_each do |x|
          if yield(x) == true
         return true
          end
@@ -78,14 +78,14 @@ module Enumerable
       false
     elsif a
       if a.class == Regexp
-        self.my_each do |x|
+        my_each do |x|
           if  a.match(x.to_s)
             return true
           end
         end
         false
       elsif a.class == Class
-        self.my_each do |x|
+        my_each do |x|
           if  x.is_a?(a) == true
             return true
           end
@@ -94,7 +94,7 @@ module Enumerable
 
       end
     else
-      self.my_each do |x|
+      my_each do |x|
          if x
         return true
          end
@@ -105,7 +105,7 @@ module Enumerable
 
   def my_none?(a=nil)
     if block_given?
-      self.my_each do |x|
+      my_each do |x|
          if yield(x) == false || yield(x) == nil
         return true
          end
@@ -113,14 +113,14 @@ module Enumerable
       false
     elsif a
       if a.class == Regexp
-        self.my_each do |x|
+        my_each do |x|
           if  a.match(x.to_s) == nil || a.match(x.to_s) == false
             return true
           end
         end
         false
       elsif a.class == Class
-        self.my_each do |x|
+        my_each do |x|
           if  x.is_a?(a) == nil || x.is_a?(a) == false
             return true
           end
@@ -129,7 +129,7 @@ module Enumerable
 
       end
     else
-      self.my_each do |x|
+      my_each do |x|
          if x == nil || x == false
         return true
          end
@@ -141,25 +141,25 @@ module Enumerable
   def my_count(a=nil)
     count = 0
     if block_given?
-      self.my_each {|x| yield(x) ? count+=1 : count}
+      my_each {|x| yield(x) ? count+=1 : count}
       return count
     elsif a
-      self.my_each {|x| x == a ? count+=1 : count}
+      my_each {|x| x == a ? count+=1 : count}
       return count
     else
-      count = self.size
+      count = size
     end
   end
 
   def my_map
     if block_given?
       arr = []
-      self.my_each do |x|
+      my_each do |x|
         arr.push(yield(x))
       end
       arr
     else
-      self.to_enum
+      to_enum
     end
   end
 
@@ -171,23 +171,23 @@ module Enumerable
     if b != nil || b != false
       case b
       when :+
-        self.my_each {|y| final+=y}
+        my_each {|y| final+=y}
         return final
       when :-
-        self.my_each {|y| final-=y}
+        my_each {|y| final-=y}
         return final
       when :*
         final = 1 if final != 0
-        self.my_each {|y| final*=y}
+        my_each {|y| final*=y}
         return final
       when :/
-        self.my_each {|y| final/=y}
+        my_each {|y| final/=y}
         return final
       end
     end
     if block_given?
       final = 1 if yield(final, self[0]) == 0 || yield(final, self[1]) == 0 if self[1] != nil
-      self.my_each {|x| final = yield(final,x)}
+      my_each {|x| final = yield(final,x)}
       return final
     end
   end
@@ -204,7 +204,7 @@ some = [1,2,3]
 
 # Tests
 
-multiply_els
+# multiply_els
 
 puts multiply_els(some)
 
@@ -224,50 +224,50 @@ some.my_each
 
 # my_each_with_index test
 
-# some.my_each_with_index{|x| puts x}
+some.my_each_with_index{|x| puts x}
 
-# puts some.my_each_with_index
+puts some.my_each_with_index
 
 # my_select test
 
-# puts some.my_select{|a| a%2==0}
+puts some.my_select{|a| a%2==0}
 
 # my_all? test
 
-# puts some.my_all?{|a| a%2==0}
+puts some.my_all?{|a| a%2==0}
 
-# puts some.my_all?(/\d/)
+puts some.my_all?(/\d/)
 
-# puts some.my_all?(String)
+puts some.my_all?(String)
 
 # my_any? test
 
-# puts some.my_any?{|a| a%2==0}
+puts some.my_any?{|a| a%2==0}
 
-# puts some.my_any?(/\d/)
+puts some.my_any?(/\d/)
 
-# puts some.my_any?(String)
+puts some.my_any?(String)
 
 # my_none? test
 
-# puts some.my_none?{|a| a%5==0}
+puts some.my_none?{|a| a%5==0}
 
-# puts some.my_none?(/\W/)
+puts some.my_none?(/\W/)
 
-# puts some.my_none?(String)
+puts some.my_none?(String)
 
 # my_count test
 
-# puts some.my_count(1)
+puts some.my_count(1)
 
-# puts some.my_count
+puts some.my_count
 
-# puts some.my_count{|a| a%1==0}
+puts some.my_count{|a| a%1==0}
 
 # my_inject test
 
-# puts some.my_inject{|x,y| x*y}
+puts some.my_inject{|x,y| x*y}
 
-# puts some.my_inject(:+)
+puts some.my_inject(:+)
 
-# puts some.my_inject(1){|x,y| x+y}
+puts some.my_inject(1){|x,y| x+y}
