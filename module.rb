@@ -1,203 +1,203 @@
 module Enumerable
-    def my_each
-        if block_given?
-            for i in 0...self.size
-                yield(self[i])
-            end
-        else
-            self.to_enum
-        end
+  def my_each
+    if block_given?
+      for i in 0...self.size
+        yield(self[i])
+      end
+    else
+      self.to_enum
     end
+  end
 
-    def my_each_with_index
-        if block_given?
-            for i in 0...self.size
-                yield(i)
-            end
-        else
-            self.to_enum
-        end
+  def my_each_with_index
+    if block_given?
+      for i in 0...self.size
+        yield(i)
+      end
+    else
+      self.to_enum
     end
+  end
 
-    def my_select
-        arr = []
-        if block_given?
-            self.my_each do |x|
-                if yield(x)
-                    arr.push(x)
-                end
-            end
-            return arr
-        else
-            self.to_enum
+  def my_select
+    arr = []
+    if block_given?
+      self.my_each do |x|
+        if yield(x)
+          arr.push(x)
         end
+      end
+      return arr
+    else
+      self.to_enum
     end
-    
-    def my_all?(a=nil)
-        if block_given?
-            self.my_each do |x|
-               if yield(x) == nil || yield(x) == false
-                return false
-               end
-            end
-            true
-        elsif a
-            if a.class == Regexp
-                self.my_each do |x|
-                    if  a.match(x.to_s) == nil || a.match(x.to_s) == false
-                        return false
-                    end
-                end
-                true
-            elsif a.class == Class
-                self.my_each do |x|
-                    if  x.is_a?(a) == nil || x.is_a?(a) == false
-                        return false
-                    end
-                end
-                true
-
-            end
-        else
-            self.my_each do |x|
-               if x == nil || x == false
-                return false
-               end
-            end
-            true
+  end
+  
+  def my_all?(a=nil)
+    if block_given?
+      self.my_each do |x|
+         if yield(x) == nil || yield(x) == false
+        return false
+         end
+      end
+      true
+    elsif a
+      if a.class == Regexp
+        self.my_each do |x|
+          if  a.match(x.to_s) == nil || a.match(x.to_s) == false
+            return false
+          end
         end
+        true
+      elsif a.class == Class
+        self.my_each do |x|
+          if  x.is_a?(a) == nil || x.is_a?(a) == false
+            return false
+          end
+        end
+        true
+
+      end
+    else
+      self.my_each do |x|
+         if x == nil || x == false
+        return false
+         end
+      end
+      true
     end
+  end
 
-    def my_any?(a=nil)
-        if block_given?
-            self.my_each do |x|
-               if yield(x) == true
-                return true
-               end
-            end
-            false
-        elsif a
-            if a.class == Regexp
-                self.my_each do |x|
-                    if  a.match(x.to_s)
-                        return true
-                    end
-                end
-                false
-            elsif a.class == Class
-                self.my_each do |x|
-                    if  x.is_a?(a) == true
-                        return true
-                    end
-                end
-                false
-
-            end
-        else
-            self.my_each do |x|
-               if x
-                return true
-               end
-            end
-            false
+  def my_any?(a=nil)
+    if block_given?
+      self.my_each do |x|
+         if yield(x) == true
+        return true
+         end
+      end
+      false
+    elsif a
+      if a.class == Regexp
+        self.my_each do |x|
+          if  a.match(x.to_s)
+            return true
+          end
         end
+        false
+      elsif a.class == Class
+        self.my_each do |x|
+          if  x.is_a?(a) == true
+            return true
+          end
+        end
+        false
+
+      end
+    else
+      self.my_each do |x|
+         if x
+        return true
+         end
+      end
+      false
     end
+  end
 
-    def my_none?(a=nil)
-        if block_given?
-            self.my_each do |x|
-               if yield(x) == false || yield(x) == nil
-                return true
-               end
-            end
-            false
-        elsif a
-            if a.class == Regexp
-                self.my_each do |x|
-                    if  a.match(x.to_s) == nil || a.match(x.to_s) == false
-                        return true
-                    end
-                end
-                false
-            elsif a.class == Class
-                self.my_each do |x|
-                    if  x.is_a?(a) == nil || x.is_a?(a) == false
-                        return true
-                    end
-                end
-                false
-
-            end
-        else
-            self.my_each do |x|
-               if x == nil || x == false
-                return true
-               end
-            end
-            false
+  def my_none?(a=nil)
+    if block_given?
+      self.my_each do |x|
+         if yield(x) == false || yield(x) == nil
+        return true
+         end
+      end
+      false
+    elsif a
+      if a.class == Regexp
+        self.my_each do |x|
+          if  a.match(x.to_s) == nil || a.match(x.to_s) == false
+            return true
+          end
         end
+        false
+      elsif a.class == Class
+        self.my_each do |x|
+          if  x.is_a?(a) == nil || x.is_a?(a) == false
+            return true
+          end
+        end
+        false
+
+      end
+    else
+      self.my_each do |x|
+         if x == nil || x == false
+        return true
+         end
+      end
+      false
     end
+  end
 
-    def my_count(a=nil)
-        count = 0
-        if block_given?
-            self.my_each {|x| yield(x) ? count+=1 : count}
-            return count
-        elsif a
-            self.my_each {|x| x == a ? count+=1 : count}
-            return count
-        else
-            count = self.size
-        end
+  def my_count(a=nil)
+    count = 0
+    if block_given?
+      self.my_each {|x| yield(x) ? count+=1 : count}
+      return count
+    elsif a
+      self.my_each {|x| x == a ? count+=1 : count}
+      return count
+    else
+      count = self.size
     end
+  end
 
-    def my_map
-        if block_given?
-            arr = []
-            self.my_each do |x|
-                arr.push(yield(x))
-            end
-            arr
-        else
-            self.to_enum
-        end
+  def my_map
+    if block_given?
+      arr = []
+      self.my_each do |x|
+        arr.push(yield(x))
+      end
+      arr
+    else
+      self.to_enum
     end
+  end
 
-    def my_inject(a=nil,b=nil)
-        a.class == Numeric ? final = a : final = 0
-        if a != nil && b == nil
-            b = a
-        end
-        if b != nil || b != false
-            case b
-            when :+
-                self.my_each {|y| final+=y}
-                return final
-            when :-
-                self.my_each {|y| final-=y}
-                return final
-            when :*
-                final = 1 if final != 0
-                self.my_each {|y| final*=y}
-                return final
-            when :/
-                self.my_each {|y| final/=y}
-                return final
-            end
-        end
-        if block_given?
-            final = 1 if yield(final, self[0]) == 0 || yield(final, self[1]) == 0 if self[1] != nil
-            self.my_each {|x| final = yield(final,x)}
-            return final
-        end
+  def my_inject(a=nil,b=nil)
+    a.class == Numeric ? final = a : final = 0
+    if a != nil && b == nil
+      b = a
     end
+    if b != nil || b != false
+      case b
+      when :+
+        self.my_each {|y| final+=y}
+        return final
+      when :-
+        self.my_each {|y| final-=y}
+        return final
+      when :*
+        final = 1 if final != 0
+        self.my_each {|y| final*=y}
+        return final
+      when :/
+        self.my_each {|y| final/=y}
+        return final
+      end
+    end
+    if block_given?
+      final = 1 if yield(final, self[0]) == 0 || yield(final, self[1]) == 0 if self[1] != nil
+      self.my_each {|x| final = yield(final,x)}
+      return final
+    end
+  end
 
-    
+  
 
 end
 
 def multiply_els(x)
-    x.my_inject(:+)
+  x.my_inject(:+)
 end
 
 some = [1,2,3]
