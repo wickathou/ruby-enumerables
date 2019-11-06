@@ -37,28 +37,17 @@ module Enumerable
 
   def my_none?(a=nil)
     my_each { |x| return yield(x) ? true : false } if block_given?
-    if a
-      if a.class == Regexp
-        my_each  { |x| return x.to_s.match(a)? true : false }
-      elsif a.class == Class
-        my_each { |x| return x.is_a?(a) ? true : false }
-      end
-    else
-      my_each { |x| x ? true : false }
-    end
+    my_each  { |x| return x.to_s.match(a)? true : false } if a.class == Regexp
+    my_each { |x| return x.is_a?(a) ? true : false } if a.class == Class
+    my_each { |x| x ? true : false } unless block_given?
   end
 
   def my_count(a=nil)
     count = 0
-    if block_given?
-      my_each { |x| yield(x) ? count+=1 : count }
-      return count
-    elsif a
-      my_each { |x| x == a ? count+=1 : count }
-      return count
-    else
-      count = size
-    end
+    my_each { |x| yield(x) ? count+=1 : count } if block_given?
+    my_each { |x| x == a ? count+=1 : count } if a
+    return count if block_given?
+    count = size unless block_given?
   end
 
   def my_map
