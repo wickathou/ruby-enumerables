@@ -23,12 +23,9 @@ module Enumerable
 
   def my_all?(a=nil)
     my_each { |x| return yield(x)? true : false } if block_given?
-    if a.class == Regexp
-      my_each { |x| return x.to_s.match?(a)? true : false }
-    elsif a.class == Class
-      my_each { |x| return x.is_a?(a)? true : false }
-    end
-    my_each { |x| return x ? true : false }
+    my_each { |x| return x.to_s.match?(a)? true : false } if a.class == Regexp
+    my_each { |x| return x.is_a?(a)? true : false } if a.class == Class
+    my_each { |x| return x ? true : false } unless block_given?
   end
 
   def my_any?(a=nil)
