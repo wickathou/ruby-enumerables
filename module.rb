@@ -30,8 +30,8 @@ module Enumerable
 
   def my_any?(a=nil)
     my_each { |x| return yield(x) ? true : false } if block_given?
-    my_each  { |x| return a.match(x.to_s) ? true : false } if a.class == Regexp
-    my_each  { |x| return x.is_a?(a) ? true : false } if a.class == Class
+    my_each { |x| return a.match(x.to_s) ? true : false } if a.class == Regexp
+    my_each { |x| return x.is_a?(a) ? true : false } if a.class == Class
     my_each { |x| return x ? true : false } unless block_given?
   end
 
@@ -61,8 +61,8 @@ module Enumerable
 
   def my_inject(a=nil,b=nil)
     a.class == Numeric ? final = a : final = 0
-    b = a if a != nil && b.nil?
-    if b != nil || b != false
+    b = a if !a.nil? && b.nil?
+    if !b.nil? || b != false
       case b
       when :+
         my_each { |y| final += y }
@@ -72,21 +72,19 @@ module Enumerable
         return final
       when :*
         final = 1 if final != 0
-        my_each { |y| final*=y }
+        my_each { |y| final *= y }
         return final
       when :/
         my_each { |y| final /= y }
         return final
       end
     end
-    if block_given?
-      final = 1 if yield(final, self[0]) == 0 || yield(final, self[1]) == 0 if self[1] != nil
-      my_each { |x| final = yield(final, x) }
-      return final
-    end
+    final = 1 if yield(final, self[0]) == 0 || yield(final, self[1]) == 0 if self[1] != nil if block_given?
+    my_each { |x| final = yield(final, x) } if block_given?
+    return final if block_given?
   end
 end
 
 def multiply_els(x)
-  x.my_inject(:+)
+  x.my_inject(:*)
 end
