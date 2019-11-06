@@ -1,4 +1,4 @@
-require_relative './module.rb'
+require_relative '../module.rb'
 
 
 some = [1,2,3]
