@@ -79,7 +79,7 @@ module Enumerable
         return final
       end
     end
-    final = 1 if yield(final, self[0]) == 0 || yield(final, self[1]) == 0 if self[1] != nil if block_given?
+    final = 1 if yield(final, self[0]).zero? || yield(final, self[1]).zero? if !self[1].nil? && block_given?
     my_each { |x| final = yield(final, x) } if block_given?
     return final if block_given?
   end
