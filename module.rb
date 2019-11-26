@@ -51,22 +51,28 @@ module Enumerable
   end
 
   def my_any?(a = nil)
-    to_a if is_a?(Range)
+    arr = to_a.dup
     if block_given?
       my_each { |x| return true if yield(x) }
       return false
-    elsif a.is_a? Regexp
-      my_each { |x| return true if a.match?(x.to_s) }
+    end
+    return class_type(arr, a)
+  end
+
+  def class_type(arr, a)
+    if a.is_a? Regexp
+      arr.my_each { |x| return true if a.match?(x.to_s) }
       return false
     elsif a.is_a? Class
-      my_each { |x| return true if x.is_a?(a) }
+      arr.my_each { |x| return true if x.is_a?(a) }
       return false
     elsif a
-      my_each { |x| return true if x == a }
+      arr.my_each { |x| return true if x == a }
+      return false
+    else
+      my_each { |x| return true if x }
       return false
     end
-    my_each { |x| return true if x }
-    false
   end
 
   def my_none?(a = nil, &a_block)
@@ -125,10 +131,8 @@ end
 
 some = [1,2,3]
 
-puts (some.my_inject { |x, y| x * y })
+puts some.my_any? { |a| a % 5 == 0 }
 
-# puts some.my_inject(:*)
+puts some.my_any?(/\w/)
 
-puts some.my_inject(2) { |x, y| x + y }
-
-puts some.inject(2){|x,y| x*y}
+puts some.my_any?(String)
