@@ -25,7 +25,6 @@ module Enumerable
 
   def my_select
     return to_enum unless block_given?
-    
     arr = []
     my_each { |x| arr.push(x) if yield(x) } if block_given?
     arr
@@ -118,7 +117,6 @@ module Enumerable
 
   def final_value(val, sym)
     return val if val.is_a?(Numeric)
-    
     if val == :* || sym == :*
       1
     else
