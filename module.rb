@@ -25,10 +25,11 @@ module Enumerable
 
   def my_select
     return to_enum unless block_given?
-
-    arr = []
-    my_each { |x| arr.push(x) if yield(x) }
-    arr
+    if block_given?
+      arr = []
+      my_each { |x| arr.push(x) if yield(x) }
+      arr
+    end
   end
 
   def my_all?(a = nil)
