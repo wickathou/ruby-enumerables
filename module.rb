@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative './lib/module_addons.rb'
 
 module Enumerable
