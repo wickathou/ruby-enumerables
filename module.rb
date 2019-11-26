@@ -121,19 +121,18 @@ module Enumerable
     end
   end
 
-  def final_value(a, b)
-    if a.is_a?(Numeric)
-      return a
-    elsif a == :* || b ==:*
-      return 1
+  def final_value(val, sym)
+    return val if val.is_a?(Numeric)
+    if val == :* || sym == :*
+      1
     else
-      return 0
+      0
     end
   end
 
-  def multiply_els(x)
+  def multiply_els(arr)
     final = 1
-    x.my_each { |y| final *= y }
-    return final
+    arr.my_each { |y| final *= y }
+    final
   end
 end
