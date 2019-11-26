@@ -2,19 +2,25 @@
 
 module Enumerable
   def my_each
-    return to_enum unless block_given?
-
-    for i in 0...size
-      yield(self[i])
+    if block_given?
+      i = 0
+      while i < size
+        yield(self[i])
+        i += 1
+      end
     end
+    return to_enum unless block_given?
   end
 
   def my_each_with_index
-    return to_enum unless block_given?
-
-    for i in 0...size
-      yield(self[i], i)
+    if block_given?
+      i = 0
+      while i < size
+        yield(self[i], i)
+        i += 1
+      end
     end
+    return to_enum unless block_given?
   end
 
   def my_select
