@@ -3,7 +3,7 @@
 module Enumerable
   def my_each
     return to_enum unless block_given?
-    
+
     for i in 0...size
       yield(self[i])
     end
@@ -27,7 +27,7 @@ module Enumerable
 
   def my_all?(a = nil)
     to_a if is_a?(Range)
-    my_each { |x| return false if yield(x)} if block_given?
+    my_each { |x| return false if yield(x) } if block_given?
     if a.is_a? Regexp
       my_each { |x| return false unless a.match?(x.to_s) }
       return true
@@ -80,7 +80,8 @@ module Enumerable
 
   def my_map
     arr = []
-    (to_enum unless block_given?)
+    return to_enum unless block_given?
+
     if block_given?
       my_each { |x| arr.push(yield(x)) }
       return arr
