@@ -55,8 +55,7 @@ module Enumerable
     if block_given?
       my_each { |x| return true if yield(x) }
       return false
-    end
-    if a.is_a? Regexp
+    elsif a.is_a? Regexp
       my_each { |x| return true if a.match?(x.to_s) }
       return false
     elsif a.is_a? Class
