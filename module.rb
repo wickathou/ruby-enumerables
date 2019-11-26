@@ -82,9 +82,9 @@ module Enumerable
 
   def my_count(a = nil)
     count = 0
-    return count = size unless block_given? || !a.nil?
+    my_each { |x| x == a ? count += 1 : count } if a
+    return count = size unless block_given?
     my_each { |x| yield(x) ? count += 1 : count } if block_given?
-    my_each { |x| x == a ? count += 1 : count } if !a.nil? && !block_given?
     count
   end
 
