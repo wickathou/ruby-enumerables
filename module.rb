@@ -56,14 +56,15 @@ module Enumerable
       my_each { |x| return true if yield(x) }
       return false
     end
+    if a.is_a? Regexp
+      arr.my_each { |x| return true if a.match?(x.to_s) }
+      return false
+    end
     return class_type(arr, a)
   end
 
   def class_type(arr, a)
-    if a.is_a? Regexp
-      arr.my_each { |x| return true if a.match?(x.to_s) }
-      return false
-    elsif a.is_a? Class
+    if a.is_a? Class
       arr.my_each { |x| return true if x.is_a?(a) }
       return false
     elsif a
