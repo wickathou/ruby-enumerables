@@ -50,8 +50,6 @@ module Enumerable
     true
   end
 
-
-
   def my_any?(a = nil)
     to_a if is_a?(Range)
     if block_given?
@@ -61,12 +59,10 @@ module Enumerable
     if a.is_a? Regexp
       my_each { |x| return true if a.match?(x.to_s) }
       return false
-    end
-    if a.is_a? Class
+    elsif a.is_a? Class
       my_each { |x| return true if x.is_a?(a) }
       return false
-    end
-    if a
+    elsif a
       my_each { |x| return true if x == a }
       return false
     end
