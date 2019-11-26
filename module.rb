@@ -115,15 +115,13 @@ module Enumerable
       return final
     end
     final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
-    if block_given?
-      arr.my_each { |x| final = yield(final, x) }
-      final
-    end
+    arr.my_each { |x| final = yield(final, x) } if block_given?
+    final
   end
 
   def final_value(val, sym)
     return val if val.is_a?(Numeric)
-
+    
     if val == :* || sym == :*
       1
     else
