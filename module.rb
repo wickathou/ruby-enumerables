@@ -98,13 +98,15 @@ module Enumerable
 
   def my_inject(a = nil, b = nil)
     arr = to_a.dup
+    final = 0
     if a.is_a?(Numeric)
       final = a
-    else
+    elsif a.is_a?(Symbol)
       final = 0
+      b = a
     end
-    b = a if !a.nil? && b.nil?
     if b.is_a?(Symbol)
+      final = 1 if b == :*
       arr.my_each {|y| final=final.send(b,y)}
       return final
     end
@@ -114,6 +116,18 @@ module Enumerable
   end
 
   def multiply_els(x)
-    x.my_inject(:*)
+    final = 1
+    x.my_each { |y| final *= y }
+    return final
   end
 end
+
+some = [1,2,3]
+
+puts (some.my_inject { |x, y| x * y })
+
+# puts some.my_inject(:*)
+
+puts some.my_inject(1) { |x, y| x + y }
+
+puts some.inject{|x,y| x*y}
