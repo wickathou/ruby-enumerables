@@ -50,6 +50,8 @@ module Enumerable
     true
   end
 
+
+
   def my_any?(a = nil)
     to_a if is_a?(Range)
     if block_given?
@@ -79,7 +81,6 @@ module Enumerable
   def my_count(a = nil)
     count = 0
     return count = size unless block_given? || !a.nil?
-
     my_each { |x| yield(x) ? count += 1 : count } if block_given?
     my_each { |x| x == a ? count += 1 : count } if !a.nil? && !block_given?
     count
@@ -103,22 +104,9 @@ module Enumerable
       final = 0
     end
     b = a if !a.nil? && b.nil?
-    if !b.nil? || b != false
-      case b
-      when :+
-        arr.my_each { |y| final += y }
-        return final
-      when :-
-        arr.my_each { |y| final -= y }
-        return final
-      when :*
-        final = 1 unless a.is_a?(Numeric)
-        arr.my_each { |y| final *= y }
-        return final
-      when :/
-        arr.my_each { |y| final /= y }
-        return final
-      end
+    if b.is_a?(Symbol)
+      arr.my_each {|y| final=final.send(b,y)}
+      return final
     end
     final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
     arr.my_each { |x| final = yield(final, x) } if block_given?
