@@ -118,7 +118,7 @@ module Enumerable
 
   def final_value(val, sym)
     return val if val.is_a?(Numeric)
-    
+
     if val == :* || sym == :*
       1
     else
