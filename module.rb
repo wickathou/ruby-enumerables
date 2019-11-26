@@ -79,10 +79,8 @@ module Enumerable
       arr.my_each { |x| return true if x == val }
       return false
     end
-    if
-      my_each { |x| return true if x }
-      return false
-    end
+    my_each { |x| return true if x }
+    return false
   end
 
   def my_none?(val = nil, &a_block)
@@ -101,8 +99,9 @@ module Enumerable
   def my_map
     arr = []
     return to_enum unless block_given?
+
     my_each { |x| arr.push(yield(x)) } if block_given?
-    return arr
+    arr
   end
 
   def my_inject(val = nil, sym = nil)
