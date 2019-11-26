@@ -25,37 +25,36 @@ module Enumerable
 
   def my_select
     return to_enum unless block_given?
-    if block_given?
-      arr = []
-      my_each { |x| arr.push(x) if yield(x) }
-      arr
-    end
+    
+    arr = []
+    my_each { |x| arr.push(x) if yield(x) } if block_given?
+    arr
   end
 
-  def my_all?(a = nil)
+  def my_all?(val = nil)
     arr = to_a.dup
     if block_given?
       my_each { |x| return false unless yield(x) }
       return true
     end
-    if a.is_a? Regexp
-      my_each { |x| return false unless a.match?(x.to_s) }
+    if val.is_a? Regexp
+      my_each { |x| return false unless val.match?(x.to_s) }
       return true
     end
-    return check_all(arr, a)
+    check_all(arr, val)
   end
 
-  def check_all(arr, a)
-    if a.is_a? Class
-      arr.my_each { |x| return false unless x.is_a?(a) }
+  def check_all(arr, val)
+    if val.is_a? Class
+      arr.my_each { |x| return false unless x.is_a?(val) }
       return true
     end
-    if a
-      arr.my_each { |x| return false unless x == a }
+    if val
+      arr.my_each { |x| return false unless x == val }
       return true
     end
     arr.my_each { |x| return false unless x }
-    return true
+    true
   end
 
   def my_any?(val = nil)
@@ -80,7 +79,7 @@ module Enumerable
       return false
     end
     my_each { |x| return true if x }
-    return false
+    false
   end
 
   def my_none?(val = nil, &a_block)
