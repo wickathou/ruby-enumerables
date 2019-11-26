@@ -114,8 +114,8 @@ module Enumerable
       arr.my_each {|y| final = final.send(b,y)}
       return final
     end
+    final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
     if block_given?
-      final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
       arr.my_each { |x| final = yield(final, x) }
       final
     end
@@ -123,7 +123,7 @@ module Enumerable
 
   def final_value(val, sym)
     return val if val.is_a?(Numeric)
-    
+
     if val == :* || sym == :*
       1
     else
