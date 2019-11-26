@@ -33,21 +33,29 @@ module Enumerable
   end
 
   def my_all?(a = nil)
-    to_a if is_a?(Range)
-    my_each { |x| return false if yield(x) } if block_given?
+    arr = to_a.dup
+    if block_given?
+      my_each { |x| return false unless yield(x) }
+      return true
+    end
     if a.is_a? Regexp
       my_each { |x| return false unless a.match?(x.to_s) }
       return true
     end
+    return check_all(arr, a)
+  end
+
+  def check_all(arr, a)
     if a.is_a? Class
-      my_each { |x| return false unless x.is_a?(a) }
+      arr.my_each { |x| return false unless x.is_a?(a) }
       return true
     end
     if a
-      my_each { |x| return false unless x == a }
+      arr.my_each { |x| return false unless x == a }
+      return true
     end
-    my_each { |x| return false unless x }
-    true
+    arr.my_each { |x| return false unless x }
+    return true
   end
 
   def my_any?(a = nil)
@@ -60,10 +68,10 @@ module Enumerable
       arr.my_each { |x| return true if a.match?(x.to_s) }
       return false
     end
-    return class_type(arr, a)
+    return check_any(arr, a)
   end
 
-  def class_type(arr, a)
+  def check_any(arr, a)
     if a.is_a? Class
       arr.my_each { |x| return true if x.is_a?(a) }
       return false
@@ -129,11 +137,3 @@ module Enumerable
     return final
   end
 end
-
-some = [1,2,3]
-
-puts some.my_any? { |a| a % 5 == 0 }
-
-puts some.my_any?(/\w/)
-
-puts some.my_any?(String)
