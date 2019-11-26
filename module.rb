@@ -58,40 +58,42 @@ module Enumerable
     return true
   end
 
-  def my_any?(a = nil)
+  def my_any?(val = nil)
     arr = to_a.dup
     if block_given?
       my_each { |x| return true if yield(x) }
       return false
     end
-    if a.is_a? Regexp
-      arr.my_each { |x| return true if a.match?(x.to_s) }
+    if val.is_a? Regexp
+      arr.my_each { |x| return true if val.match?(x.to_s) }
       return false
     end
-    return check_any(arr, a)
+    check_any(arr, val)
   end
 
-  def check_any(arr, a)
-    if a.is_a? Class
-      arr.my_each { |x| return true if x.is_a?(a) }
+  def check_any(arr, val)
+    if val.is_a? Class
+      arr.my_each { |x| return true if x.is_a?(val) }
       return false
-    elsif a
-      arr.my_each { |x| return true if x == a }
+    elsif val
+      arr.my_each { |x| return true if x == val }
       return false
-    else
+    end
+    if
       my_each { |x| return true if x }
       return false
     end
   end
 
-  def my_none?(a = nil, &a_block)
-    !my_any?(a, &a_block)
+  def my_none?(val = nil, &a_block)
+    !my_any?(val, &a_block)
   end
 
-  def my_count(a = nil)
+  def my_count(val = nil)
     count = 0
-    my_each { |x| x == a ? count += 1 : count } if a
+    my_each { |x| x == val ? count += 1 : count } if a
     return count = size unless block_given?
+
     my_each { |x| yield(x) ? count += 1 : count } if block_given?
     count
   end
@@ -99,19 +101,16 @@ module Enumerable
   def my_map
     arr = []
     return to_enum unless block_given?
-
-    if block_given?
-      my_each { |x| arr.push(yield(x)) }
-      return arr
-    end
+    my_each { |x| arr.push(yield(x)) } if block_given?
+    return arr
   end
 
-  def my_inject(a = nil, b = nil)
+  def my_inject(val = nil, sym = nil)
     arr = to_a.dup
-    final = final_value(a, b)
-    b = a if a.is_a?(Symbol)
-    if b.is_a?(Symbol)
-      arr.my_each {|y| final = final.send(b,y)}
+    final = final_value(val, sym)
+    sym = val if val.is_a?(Symbol)
+    if sym.is_a?(Symbol)
+      arr.my_each { |y| final = final.send(sym, y) }
       return final
     end
     final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
