@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require_relative './lib/module_addons.rb'
 
 module Enumerable
   def my_each
@@ -44,19 +45,6 @@ module Enumerable
     check_all(arr, val)
   end
 
-  def check_all(arr, val)
-    if val.is_a? Class
-      arr.my_each { |x| return false unless x.is_a?(val) }
-      return true
-    end
-    if val
-      arr.my_each { |x| return false unless x == val }
-      return true
-    end
-    arr.my_each { |x| return false unless x }
-    true
-  end
-
   def my_any?(val = nil)
     arr = to_a.dup
     if block_given?
@@ -68,18 +56,6 @@ module Enumerable
       return false
     end
     check_any(arr, val)
-  end
-
-  def check_any(arr, val)
-    if val.is_a? Class
-      arr.my_each { |x| return true if x.is_a?(val) }
-      return false
-    elsif val
-      arr.my_each { |x| return true if x == val }
-      return false
-    end
-    my_each { |x| return true if x }
-    false
   end
 
   def my_none?(val = nil, &a_block)
