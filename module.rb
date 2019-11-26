@@ -98,21 +98,21 @@ module Enumerable
 
   def my_inject(a = nil, b = nil)
     arr = to_a.dup
-    final = 0
     if a.is_a?(Numeric)
       final = a
     elsif a.is_a?(Symbol)
-      final = 0
       b = a
     end
+    b == :* ? final = 1 : final = 0
     if b.is_a?(Symbol)
-      final = 1 if b == :*
       arr.my_each {|y| final=final.send(b,y)}
       return final
     end
-    final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
-    arr.my_each { |x| final = yield(final, x) } if block_given?
-    final
+    if block_given?
+      final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
+      arr.my_each { |x| final = yield(final, x) }
+      final
+    end
   end
 
   def multiply_els(x)
@@ -128,6 +128,6 @@ puts (some.my_inject { |x, y| x * y })
 
 # puts some.my_inject(:*)
 
-puts some.my_inject(1) { |x, y| x + y }
+puts some.my_inject(2) { |x, y| x + y }
 
-puts some.inject{|x,y| x*y}
+puts some.inject(2){|x,y| x*y}
