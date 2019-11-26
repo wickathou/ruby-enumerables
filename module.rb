@@ -2,53 +2,76 @@
 
 module Enumerable
   def my_each
+    return to_enum unless block_given?
     for i in 0...size
       yield(self[i])
-    end if block_given?
-    to_enum unless block_given?
+    end
   end
 
   def my_each_with_index
+    return to_enum unless block_given?
     for i in 0...size
-      yield(i)
-    end if block_given?
-    to_enum unless block_given?
+      yield(self[i], i)
+    end
   end
 
   def my_select
+    return to_enum unless block_given?
     arr = []
-    my_each { |x| return arr.push(x) if yield(x) } if block_given?
-    to_enum unless block_given?
+    my_each { |x| arr.push(x) if yield(x) }
+    arr
   end
 
   def my_all?(a=nil)
-    my_each { |x| return yield(x) ? true : false } if block_given?
-    my_each { |x| return x.to_s.match?(a) ? true : false } if a.class == Regexp
-    my_each { |x| return x.is_a?(a) ? true : false } if a.class == Class
-    my_each { |x| return x ? true : false } unless block_given?
+    self.to_a if self.is_a?(Range)
+    my_each { |x| return false if yield(x)} if block_given?
+    if a.is_a? Regexp
+      my_each { |x| return false unless a.match?(x.to_s)}
+      return true
+    end
+    if a.is_a? Class
+      my_each { |x| return false unless x.is_a?(a)}
+      return true
+    end
+    if a
+      my_each { |x| return false unless x==a}
+    end
+    my_each { |x| return false unless x}
+    true
   end
 
   def my_any?(a=nil)
-    my_each { |x| return yield(x) ? true : false } if block_given?
-    my_each { |x| return a.match(x.to_s) ? true : false } if a.class == Regexp
-    my_each { |x| return x.is_a?(a) ? true : false } if a.class == Class
-    my_each { |x| return x ? true : false } unless block_given?
+    self.to_a if self.is_a?(Range)
+    if block_given?
+      my_each { |x| return true if yield(x)}
+      return false
+    end
+    if a.is_a? Regexp
+      my_each { |x| return true if a.match?(x.to_s)}
+      return false
+    end
+    if a.is_a? Class
+      my_each { |x| return true if x.is_a?(a)}
+      return false
+    end
+    if a
+      my_each { |x| return true if x===a}
+      return false
+    end
+    my_each { |x| return true if x}
+    false
   end
 
-  def my_none?(a=nil)
-    my_each { |x| return yield(x) ? true : false } if block_given?
-    my_each { |x| return x.to_s.match(a) ? true : false } if a.class == Regexp
-    my_each { |x| return x.is_a?(a) ? true : false } if a.class == Class
-    my_each { |x| x ? true : false } unless block_given?
+  def my_none?(a=nil,&a_block)
+    !my_any?(a,&a_block)
   end
 
   def my_count(a=nil)
-    count = 0
+    count=0
+    return count = size unless block_given? || !a.nil?
     my_each { |x| yield(x) ? count += 1 : count } if block_given?
-    my_each { |x| x == a ? count += 1 : count } if a
-    return count if block_given?
-
-    count = size unless block_given?
+    my_each { |x| x == a ? count += 1 : count } if !a.nil? && !block_given?
+    count
   end
 
   def my_map
@@ -60,27 +83,28 @@ module Enumerable
   end
 
   def my_inject(a=nil,b=nil)
-    a.class == Numeric ? final = a : final = 0
+    arr = self.to_a.dup if self.is_a?(Range)
+    a.is_a?(Numeric) ? final = a : final = 0
     b = a if !a.nil? && b.nil?
     if !b.nil? || b != false
       case b
       when :+
-        my_each { |y| final += y }
+        arr.my_each { |y| final += y }
         return final
       when :-
-        my_each { |y| final -= y }
+        arr.my_each { |y| final -= y }
         return final
       when :*
-        final = 1 if final != 0
-        my_each { |y| final *= y }
+        final = 1 if !a.is_a?(Numeric)
+        arr.my_each { |y| final *= y }
         return final
       when :/
-        my_each { |y| final /= y }
+        arr.my_each { |y| final /= y }
         return final
       end
     end
-    final = 1 if yield(final, self[0]).zero? || yield(final, self[1]).zero? if !self[1].nil? && block_given?
-    my_each { |x| final = yield(final, x) } if block_given?
+    final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
+    arr.my_each { |x| final = yield(final, x) } if block_given?
     return final if block_given?
   end
 end
