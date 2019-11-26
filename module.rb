@@ -90,7 +90,11 @@ module Enumerable
 
   def my_inject(a = nil, b = nil)
     arr = to_a.dup
-    a.is_a?(Numeric) ? final = a : final = 0
+    if a.is_a?(Numeric)
+      final = a
+    else
+      final = 0
+    end
     b = a if !a.nil? && b.nil?
     if !b.nil? || b != false
       case b
