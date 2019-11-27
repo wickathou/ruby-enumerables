@@ -86,7 +86,7 @@ module Enumerable
       final = arr[0]
     else
       final = final_value(val, sym)
-      final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
+      final = 1 if yield(final, arr[0]).zero?
     end
     sym = val if val.is_a?(Symbol)
     if sym.is_a?(Symbol)
