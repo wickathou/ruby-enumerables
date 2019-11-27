@@ -82,13 +82,17 @@ module Enumerable
 
   def my_inject(val = nil, sym = nil)
     arr = to_a.dup
-    final = final_value(val, sym)
+    if arr[0].is_a?(String)
+      final = arr[0]
+    else
+      final = final_value(val, sym)
+      final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
+    end
     sym = val if val.is_a?(Symbol)
     if sym.is_a?(Symbol)
       arr.my_each { |y| final = final.send(sym, y) }
       return final
     end
-    final = 1 if yield(final, arr[0]).zero? && !arr[0].zero?
     arr.my_each { |x| final = yield(final, x) } if block_given?
     final
   end
