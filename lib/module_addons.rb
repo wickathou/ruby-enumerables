@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Enumerable
   def check_all(arr, val)
     if val.is_a? Class
