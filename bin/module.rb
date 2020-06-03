@@ -1,17 +1,15 @@
-# frozen_string_literal: true
-
-require_relative './lib/module_addons.rb'
+require_relative '../lib/module_addons'
 
 module Enumerable
   def my_each
     if block_given?
       i = 0
       while i < size
-        if self.is_a?(Array)
+        if is_a?(Array)
           yield(self[i])
           i += 1
-        elsif self.is_a?(Hash)
-          yield(self[self.keys[i]])
+        elsif is_a?(Hash)
+          yield(self[keys[i]])
           i += 1
         end
       end
@@ -21,17 +19,13 @@ module Enumerable
 
   def my_each_with_index
     if block_given?
-      if self.is_a?(Array)
-        i = 0
-        while i < size
+      i = 0
+      while i < size
+        if is_a?(Array)
           yield(self[i], i)
           i += 1
-        end
-      elsif self.is_a?(Hash)
-      i = 0
-      arr = self.to_a
-        while i < size
-          yield(arr[i], i)
+        elsif is_a?(Hash)
+          yield(self[keys[i]], i)
           i += 1
         end
       end
@@ -41,6 +35,7 @@ module Enumerable
 
   def my_select
     return to_enum unless block_given?
+
     arr = []
     my_each { |x| arr.push(x) if yield(x) } if block_given?
     arr
@@ -91,29 +86,16 @@ module Enumerable
   def my_map
     arr = []
     return to_enum unless block_given?
+
     my_each { |x| arr.push(yield(x)) } if block_given?
     arr
   end
 
   def my_inject(arg1 = nil, arg2 = nil)
-    if arg2.nil?
-      if arg1.is_a?(Symbol)
-        sym = arg1
-      else
-        val = arg1
-      end
-    else
-      val = arg1
-      sym = arg2
-    end
-    
+    arg1.is_a?(Symbol) ? sym = arg1 : val = arg1
+    sym = arg2 if arg2
     arr = to_a.dup
-    if val
-      final = val
-    else
-      final = arr.shift
-    end
-    
+    final = val || arr.shift
     if block_given?
       arr.my_each { |x| final = yield(final, x) }
     elsif sym

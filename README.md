@@ -34,6 +34,7 @@ This project implements a custom take on multiple methods from the Enumerable's 
 - count
 - map
 - inject
+- Implementation of the inject(:*) as multiply_els
 
 Made by 
 Javier Hernandez [wickathou](https://github.com/wickathou)
