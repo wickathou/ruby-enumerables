@@ -7,8 +7,13 @@ module Enumerable
     if block_given?
       i = 0
       while i < size
-        yield(self[i])
-        i += 1
+        if self.is_a?(Array)
+          yield(self[i])
+          i += 1
+        elsif self.is_a?(Hash)
+          yield(self[self.keys[i]])
+          i += 1
+        end
       end
     end
     return to_enum unless block_given?
@@ -16,10 +21,19 @@ module Enumerable
 
   def my_each_with_index
     if block_given?
+      if self.is_a?(Array)
+        i = 0
+        while i < size
+          yield(self[i], i)
+          i += 1
+        end
+      elsif self.is_a?(Hash)
       i = 0
-      while i < size
-        yield(self[i], i)
-        i += 1
+      arr = self.to_a
+        while i < size
+          yield(arr[i], i)
+          i += 1
+        end
       end
     end
     return to_enum unless block_given?
@@ -27,7 +41,6 @@ module Enumerable
 
   def my_select
     return to_enum unless block_given?
-
     arr = []
     my_each { |x| arr.push(x) if yield(x) } if block_given?
     arr
@@ -65,51 +78,51 @@ module Enumerable
 
   def my_count(val = nil)
     count = 0
-    my_each { |x| x == val ? count += 1 : count } if val
-    return count = size unless block_given?
-
-    my_each { |x| yield(x) ? count += 1 : count } if block_given?
+    if val
+      my_each { |x| x == val ? count += 1 : count }
+    elsif block_given?
+      my_each { |x| yield(x) ? count += 1 : count } if block_given?
+    else
+      count = size
+    end
     count
   end
 
   def my_map
     arr = []
     return to_enum unless block_given?
-
     my_each { |x| arr.push(yield(x)) } if block_given?
     arr
   end
 
-  def my_inject(val = nil, sym = nil)
+  def my_inject(arg1 = nil, arg2 = nil)
+    if arg2.nil?
+      if arg1.is_a?(Symbol)
+        sym = arg1
+      else
+        val = arg1
+      end
+    else
+      val = arg1
+      sym = arg2
+    end
+    
     arr = to_a.dup
-    if arr[0].is_a?(String)
-      final = arr[0]
+    if val
+      final = val
     else
-      final = final_value(val, sym)
-      final = 1 if yield(final, arr[0]).zero?
+      final = arr.shift
     end
-    sym = val if val.is_a?(Symbol)
-    if sym.is_a?(Symbol)
+    
+    if block_given?
+      arr.my_each { |x| final = yield(final, x) }
+    elsif sym
       arr.my_each { |y| final = final.send(sym, y) }
-      return final
     end
-    arr.my_each { |x| final = yield(final, x) } if block_given?
     final
   end
+end
 
-  def final_value(val, sym)
-    return val if val.is_a?(Numeric)
-
-    if val == :* || sym == :*
-      1
-    else
-      0
-    end
-  end
-
-  def multiply_els(arr)
-    final = 1
-    arr.my_each { |y| final *= y }
-    final
-  end
+def multiply_els(arr)
+  arr.my_inject(:*)
 end
