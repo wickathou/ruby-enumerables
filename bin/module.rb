@@ -1,14 +1,17 @@
-# frozen_string_literal: true
-
-require_relative './lib/module_addons.rb'
+require_relative '../lib/module_addons'
 
 module Enumerable
   def my_each
     if block_given?
       i = 0
       while i < size
-        yield(self[i])
-        i += 1
+        if is_a?(Array)
+          yield(self[i])
+          i += 1
+        elsif is_a?(Hash)
+          yield(self[keys[i]])
+          i += 1
+        end
       end
     end
     return to_enum unless block_given?
@@ -18,8 +21,13 @@ module Enumerable
     if block_given?
       i = 0
       while i < size
-        yield(self[i], i)
-        i += 1
+        if is_a?(Array)
+          yield(self[i], i)
+          i += 1
+        elsif is_a?(Hash)
+          yield(self[keys[i]], i)
+          i += 1
+        end
       end
     end
     return to_enum unless block_given?
@@ -65,10 +73,13 @@ module Enumerable
 
   def my_count(val = nil)
     count = 0
-    my_each { |x| x == val ? count += 1 : count } if val
-    return count = size unless block_given?
-
-    my_each { |x| yield(x) ? count += 1 : count } if block_given?
+    if val
+      my_each { |x| x == val ? count += 1 : count }
+    elsif block_given?
+      my_each { |x| yield(x) ? count += 1 : count } if block_given?
+    else
+      count = size
+    end
     count
   end
 
@@ -80,36 +91,20 @@ module Enumerable
     arr
   end
 
-  def my_inject(val = nil, sym = nil)
+  def my_inject(arg1 = nil, arg2 = nil)
+    arg1.is_a?(Symbol) ? sym = arg1 : val = arg1
+    sym = arg2 if arg2
     arr = to_a.dup
-    if arr[0].is_a?(String)
-      final = arr[0]
-    else
-      final = final_value(val, sym)
-      final = 1 if yield(final, arr[0]).zero?
-    end
-    sym = val if val.is_a?(Symbol)
-    if sym.is_a?(Symbol)
+    final = val || arr.shift
+    if block_given?
+      arr.my_each { |x| final = yield(final, x) }
+    elsif sym
       arr.my_each { |y| final = final.send(sym, y) }
-      return final
     end
-    arr.my_each { |x| final = yield(final, x) } if block_given?
     final
   end
+end
 
-  def final_value(val, sym)
-    return val if val.is_a?(Numeric)
-
-    if val == :* || sym == :*
-      1
-    else
-      0
-    end
-  end
-
-  def multiply_els(arr)
-    final = 1
-    arr.my_each { |y| final *= y }
-    final
-  end
+def multiply_els(arr)
+  arr.my_inject(:*)
 end
